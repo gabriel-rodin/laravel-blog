@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Blog;
+use App\Category;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
@@ -10,15 +13,7 @@ class BlogController extends Controller
     private $categories;
 
     function __construct() {
-        $this->categories = [
-            'Health and Wellness',
-            'Living Space',
-            'Nutrition and Eats',
-            'Entertainment',
-            'Garden and Farm',
-            'Attire',
-            'Adventure'
-        ];
+        $this->categories = Category::all();
     }
 
     /**
@@ -28,7 +23,7 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $data['blogs'] = Blog::all();
+        $data['blogs'] = Blog::with('user')->get();
         $data['categories'] = $this->categories;
         return view('blog.index', $data);
     }
@@ -69,7 +64,9 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        //
+        $data['blog'] = Blog::with('user')->where('id',$id)->first();
+        $data['categories'] = $this->categories;
+        return view('blog.show',$data);
     }
 
     /**
@@ -105,4 +102,13 @@ class BlogController extends Controller
     {
         //
     }
+
+    public function getUserBlogs($id)
+    {
+        $data['user'] = User::find($id);
+        $data['blogs'] = Blog::where('user_id',$id)->get();
+        $data['categories'] = $this->categories;
+        return view('blog.user-blogs',$data);
+    }
+
 }

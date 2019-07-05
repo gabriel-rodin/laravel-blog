@@ -9,6 +9,11 @@ class Blog extends Model
 {
     protected $fillable = ['id'];
 
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
     public static function manageData($request)
     {
         $data = self::firstOrNew(['id'=>$request->id]);

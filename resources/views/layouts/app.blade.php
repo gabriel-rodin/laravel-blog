@@ -32,9 +32,19 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-
+                    @if(Auth::check())
+                    <ul class="navbar-nav mr-auto ml-5">
+                        <li class="nav-item ml-2">
+                            <a class="nav-link" href="{{ url('blog') }}">Blogs</a>
+                        </li>
+                        <li class="nav-item ml-2">
+                            <a class="nav-link" href="{{ url('blog/create') }}">Create Post</a>
+                        </li>
+                        <li class="nav-item ml-2">
+                            <a class="nav-link" href="{{ url('blog/'.(Auth::check() ? Auth::user()->id : 0).'/user') }}">Manage Blogs</a>
+                        </li>
                     </ul>
+                    @endif
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
