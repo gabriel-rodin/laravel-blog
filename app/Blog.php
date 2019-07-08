@@ -13,14 +13,46 @@ class Blog extends Model
     {
         return $this->belongsTo('App\User');
     }
-
-    public static function manageData($request)
+    public function category()
     {
-        $data = self::firstOrNew(['id'=>$request->id]);
+        return $this->belongsTo('App\Category');
+    }
+
+    public static function getData($id)
+    {
+        $data = self::with('user')->with('category')->where('id',$id)->first();
+        return $data;
+    }
+
+    public static function getAll($request,$id=null)
+    {
+        $query = Blog::query();
+        $query->with('user');
+        $query->with('category');
+        if(!!$request->cat){
+            $query->where('category_id',$request->cat);
+        }
+        if(!!$id){
+            $query->where('user_id',$id);
+        }
+        $query->orderBy('created_at','desc');
+        return $query->paginate(5);
+    }
+
+    public static function manageData($request,$id)
+    {
+        $data = self::firstOrNew(['id'=>$id]);
         $data->user_id = Auth::user()->id;
         $data->title = $request->title;
-        $data->category = $request->category;
+        $data->category_id = $request->category;
         $data->description = $request->description;
         $data->save();
     }
+
+    public static function deleteData($id)
+    {
+        $data = self::find($id)->delete();
+        return $data;
+    }
+
 }

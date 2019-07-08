@@ -21,4 +21,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('/blog','BlogController');
     Route::get('/blog/{id}/user','BlogController@getUserBlogs');
+    Route::get('/users','BlogController@getUsers');
 });

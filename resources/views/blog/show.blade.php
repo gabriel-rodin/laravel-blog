@@ -7,6 +7,7 @@
             <div class="card mb-2">
                 <div class="card-header">
                     {{ $blog->title }}
+                    @include('blog.partials.action')
                 </div>
                 @include('blog.partials.card-body')
             </div>

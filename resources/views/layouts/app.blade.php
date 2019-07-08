@@ -10,7 +10,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    @include('assets.js')
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -42,6 +42,9 @@
                         </li>
                         <li class="nav-item ml-2">
                             <a class="nav-link" href="{{ url('blog/'.(Auth::check() ? Auth::user()->id : 0).'/user') }}">Manage Blogs</a>
+                        </li>
+                        <li class="nav-item ml-2">
+                            <a class="nav-link" href="{{ url('users') }}">List of Users</a>
                         </li>
                     </ul>
                     @endif

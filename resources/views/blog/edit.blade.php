@@ -4,7 +4,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="text-center">
-                <h3>Create Post</h3>
+                <h3>Edit Blog</h3>
             </div>
             @if ($errors->any())
             <div class="alert alert-danger">
@@ -20,28 +20,29 @@
                 {{ session('status') }}
             </div>
             @endif
-            <form action="{{ url('blog') }}" method="POST">
+            <form action="{{ url('blog/'.$blog->id) }}" method="POST">
                 @csrf
+                <input name="_method" type="hidden" value="PUT">
                 <div class="form-group">
                     <label for="title">Title</label>
-                    <input type="text" class="form-control" name="title" id="title" placeholder="Title">
+                    <input type="text" class="form-control" name="title" id="title" value="{{ $blog->title }}" placeholder="Title">
                     {{-- <small class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
                 </div>
                 <div class="form-group">
                     <label for="categories">Categories</label>
                     <select class="form-control" name="category" id="categories">
                         @foreach($categories as $key => $val)
-                        <option value="{{ $val->id }}">{{ $val->name }}</option>
+                        <option value="{{ $val->id }}" {{ $val->id == $blog->category_id ? 'selected' : '' }}>{{ $val->name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea class="form-control" name="description" id="description" cols="30" rows="10" placeholder="Description"></textarea>
+                    <textarea class="form-control" name="description" id="description" cols="30" rows="10" placeholder="Description">{{ $blog->description }}</textarea>
                 </div>
                 <div style="text-align:right;">
                     <a href="{{ url('blog') }}" class="btn btn-secondary">Back</a>
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Edit</button>
                 </div>
             </form>
         </div>

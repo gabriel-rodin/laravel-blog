@@ -21,10 +21,13 @@ class BlogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data['blogs'] = Blog::with('user')->get();
+        $data['blogs'] = Blog::getAll($request);
         $data['categories'] = $this->categories;
+        if(!!$request->cat){
+            $data['label'] = $data['blogs']->total() > 0 ? $data['blogs'][0]->category->name : null;
+        }
         return view('blog.index', $data);
     }
 
@@ -52,7 +55,7 @@ class BlogController extends Controller
             'category' => 'required',
             'description' => 'required|min:6',
         ]);
-        Blog::manageData($request);
+        Blog::manageData($request,null);
         return back()->with('status', 'Blog has been added!');
     }
 
@@ -64,7 +67,7 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        $data['blog'] = Blog::with('user')->where('id',$id)->first();
+        $data['blog'] = Blog::getData($id);
         $data['categories'] = $this->categories;
         return view('blog.show',$data);
     }
@@ -77,7 +80,9 @@ class BlogController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data['blog'] = Blog::getData($id);
+        $data['categories'] = $this->categories;
+        return view('blog.edit',$data);
     }
 
     /**
@@ -89,7 +94,13 @@ class BlogController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'title' => 'required|min:6',
+            'category' => 'required',
+            'description' => 'required|min:6',
+        ]);
+        Blog::manageData($request,$id);
+        return back()->with('status', 'Blog has been updated!');
     }
 
     /**
@@ -100,15 +111,25 @@ class BlogController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = Blog::deleteData($id);
+        return response()->json(['result'=>$data]);
     }
 
-    public function getUserBlogs($id)
+    public function getUserBlogs(Request $request, $id)
     {
         $data['user'] = User::find($id);
-        $data['blogs'] = Blog::where('user_id',$id)->get();
+        $data['blogs'] = Blog::getAll($request,$id);
         $data['categories'] = $this->categories;
+        if(!!$request->cat){
+            $data['label'] = $data['blogs']->total() > 0 ? $data['blogs'][0]->category->name : null;
+        }
         return view('blog.user-blogs',$data);
+    }
+
+    public function getUsers()
+    {
+        $data['users'] = User::with('posts')->get();
+        return view('blog.users',$data);
     }
 
 }
